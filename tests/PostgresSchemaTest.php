@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\DB;
 
-/*
- * The package is Postgres-first: jsonb rather than json, and a real vector
- * column. SQLite cannot show either, so these run only where there is a pg to
- * run them against.
- */
 beforeEach(function (): void {
     if (DB::connection()->getDriverName() !== 'pgsql') {
         $this->markTestSkipped('Postgres-only schema assertions.');
@@ -63,7 +58,6 @@ it('uses text for the unbounded columns and bounded varchars everywhere else', f
     foreach ($lengths as $column) {
         $n = (int) $column->len;
 
-        // Powers of two, or Laravel's unbounded string default of 255.
         $power = ($n & ($n - 1)) === 0;
 
         expect($power || $n === 255)->toBeTrue(

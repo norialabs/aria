@@ -9,14 +9,6 @@ use Illuminate\Support\Facades\Schema;
 use NoriaLabs\Aria\Aria;
 use Throwable;
 
-/**
- * Whether this database can do vector search.
- *
- * Postgres is not enough on its own: pgvector is installed per database, not
- * per cluster, and a managed host may not let the application enable it. So
- * the answer is "the extension is present", not "the driver is pgsql", and it
- * is asked again at read time because the column may never have been created.
- */
 final class Vectors
 {
     private static ?bool $available = null;
@@ -34,8 +26,6 @@ final class Vectors
         try {
             DB::connection(Aria::connection())->statement('CREATE EXTENSION IF NOT EXISTS vector');
         } catch (Throwable) {
-            // No permission to install it; fall through and ask whether
-            // somebody else already did.
         }
 
         try {
@@ -47,7 +37,6 @@ final class Vectors
         }
     }
 
-    /** The column only exists where the extension did at migration time. */
     public static function indexed(): bool
     {
         return self::available()

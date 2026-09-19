@@ -24,9 +24,6 @@ abstract class TestCase extends Orchestra
 
     protected function defineEnvironment($app): void
     {
-        // Point ARIA_TEST_PG at a scratch Postgres to exercise jsonb, the
-        // vector column and the foreign keys. Without it the suite runs on
-        // SQLite and the Postgres-only assertions skip themselves.
         if (($url = env('ARIA_TEST_PG')) !== null) {
             $app['config']->set('database.connections.aria_pg', [
                 'driver' => 'pgsql',

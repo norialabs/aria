@@ -21,12 +21,10 @@ it('names foreign keys after the model they point at', function (): void {
 it('generates version 7 identifiers, so rows sort by when they were written', function (): void {
     $id = (new Conversation)->newUniqueId();
 
-    // The version nibble is the first character of the third group.
     expect(explode('-', $id)[2][0])->toBe('7');
 });
 
 it('carries the columns the SDK store reads and writes', function (): void {
-    // Renaming one of these breaks the store, not merely a query of our own.
     foreach (['conversation_id', 'participant_type', 'participant_id', 'agent', 'role',
         'content', 'attachments', 'tool_calls', 'tool_results', 'usage', 'meta', 'approval_state'] as $column) {
         expect(Schema::hasColumn('aria_messages', $column))->toBeTrue("aria_messages.{$column}");

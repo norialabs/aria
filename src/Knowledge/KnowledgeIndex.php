@@ -22,9 +22,6 @@ class KnowledgeIndex
     ) {}
 
     /**
-     * Embeddings are regenerated only where a document's content hash moved, so
-     * a rebuild after a copy change costs one document rather than the corpus.
-     *
      * @return array{documents: int, chunks: int}
      */
     public function rebuild(bool $fresh = false): array
@@ -82,8 +79,6 @@ class KnowledgeIndex
 
         $limit ??= Config::integer('aria.retrieval.limit', 6);
 
-        // Over-fetched, because several chunks of one document are one answer
-        // and de-duplicating after the limit would return fewer than asked.
         $fetch = $limit * 3;
 
         $rows = $this->usesVectors()
@@ -134,7 +129,6 @@ class KnowledgeIndex
         return $results;
     }
 
-    /** Chunks belonging to this corpus only, so two products never read each other. */
     /** @return Builder<Chunk> */
     private function scoped(): Builder
     {
@@ -191,9 +185,6 @@ class KnowledgeIndex
     }
 
     /**
-     * The query is embedded with the same provider, model and dimensions the
-     * index was built with, or the vectors are not comparable.
-     *
      * @return list<float>
      */
     private function embed(string $query): array
@@ -226,7 +217,6 @@ class KnowledgeIndex
         return Config::integer('aria.embeddings.dimensions', 1536);
     }
 
-    /** The host owns the cache store, so it decides whether one is used at all. */
     private function caches(): bool
     {
         return Config::boolean('aria.embeddings.cache', true);
@@ -271,7 +261,6 @@ class KnowledgeIndex
         return $chunks;
     }
 
-    /** Asks for the column, not the driver: pgvector may not be installed. */
     private function usesVectors(): bool
     {
         return Vectors::indexed();

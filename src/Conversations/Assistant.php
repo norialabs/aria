@@ -17,15 +17,6 @@ use NoriaLabs\Aria\Exceptions\BudgetExhausted;
 use NoriaLabs\Aria\Spend\Budget;
 use NoriaLabs\Aria\Support\Masker;
 
-/**
- * Runs a turn under a budget.
- *
- * Persisting the turn, replaying history and resuming an approval pause are
- * the SDK's, through RemembersConversations on the agent. What is left here
- * is what the SDK does not do: masking before the text is stored or sent,
- * reserving against a cap before the call, and giving the reservation back
- * after it whatever happened.
- */
 class Assistant
 {
     /** @param iterable<int, object> $tools */
@@ -58,10 +49,6 @@ class Assistant
     }
 
     /**
-     * The SDK's own streamable response: iterable, Responsable, and able to
-     * speak the Vercel protocol, so a controller can return it for SSE and a
-     * Livewire island can walk it - without this package owning a transport.
-     *
      * @param  (callable(string): void)|null  $onDelta
      */
     public function stream(string $message, ?string $conversationId = null, ?object $participant = null, ?callable $onDelta = null): StreamableAgentResponse
@@ -74,9 +61,6 @@ class Assistant
 
         $response = $agent->stream($message, provider: $this->provider());
 
-        // Refunded when the stream completes. A stream the caller abandons
-        // never completes and never gives the reservation back until the
-        // period rolls, which makes the cap stricter rather than looser.
         $response->then(fn () => $this->budget->refund($reserved));
 
         if ($onDelta === null) {
@@ -95,8 +79,6 @@ class Assistant
     }
 
     /**
-     * The provider and model to prompt with, e.g. ['openai' => 'gpt-5.6-luna'].
-     *
      * @return array<string, string>
      */
     public function provider(): array
@@ -106,11 +88,6 @@ class Assistant
         ];
     }
 
-    /**
-     * An anonymous visitor's first turn needs a row before the SDK will keep
-     * anything: its middleware only remembers a turn that already has a
-     * conversation or a participant, and a website visitor has neither.
-     */
     private function agent(string $message, ?string $conversationId, ?object $participant): AriaAgent
     {
         $agent = new AriaAgent($this->persona, $this->tools);
@@ -128,11 +105,6 @@ class Assistant
         );
     }
 
-    /**
-     * Held before the call, given back after. A reservation that is never
-     * refunded double-counts; one that is never taken is a cap that a hundred
-     * simultaneous callers all walk through together.
-     */
     private function reserve(string $prompt): int
     {
         $estimate = $this->budget->estimateFor($prompt);

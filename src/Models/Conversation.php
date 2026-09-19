@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use NoriaLabs\Aria\Aria;
 
 /**
- * The read surface over a thread. Writes during a turn belong to the SDK's
- * ConversationStore, which also rebuilds tool calls and approval pauses into
- * replayable messages - none of which an Eloquent relation would get right.
- *
  * @property string $id
  * @property string|null $scope
  * @property string $corpus

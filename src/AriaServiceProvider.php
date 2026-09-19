@@ -13,7 +13,6 @@ use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\EmbeddingsGenerated;
 use NoriaLabs\Aria\Console\IndexCommand;
 use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
 use NoriaLabs\Aria\Contracts\Normaliser;
 use NoriaLabs\Aria\Contracts\Persona;
 use NoriaLabs\Aria\Conversations\AriaConversationStore;
@@ -31,14 +30,8 @@ class AriaServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/aria.php', 'aria');
 
-        // The host app binds KnowledgeSource and Persona. Nothing is bound for
-        // them here: a default persona is one every product would have to
-        // remember to replace, and forgetting is silent.
         $this->app->bind(BudgetPolicy::class, Unmetered::class);
 
-        // A class name rather than a callable in config, because config:cache
-        // var_exports the array and throws on a closure - a callable would
-        // pass every test and break the first deploy.
         $this->app->bind(Normaliser::class, function ($app) {
             $normaliser = config('aria.normaliser');
 
@@ -47,9 +40,6 @@ class AriaServiceProvider extends ServiceProvider
                 : $app->make(PlainText::class);
         });
 
-        // The SDK's store, pointed at Aria's tables. Rebinding it here rather
-        // than reimplementing the contract keeps the tool-turn and approval
-        // replay the SDK already does correctly.
         $this->app->singleton(ConversationStore::class, AriaConversationStore::class);
 
         $this->app->singleton(Budget::class);
@@ -80,17 +70,11 @@ class AriaServiceProvider extends ServiceProvider
             ], 'aria-migrations');
         }
 
-        // Loaded from the package unless the host published them. Doing both
-        // runs every table twice, which fails on the second CREATE and leaves
-        // a half-migrated database behind.
         if (config('aria.load_migrations', true)) {
             $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
 
         if (config('aria.record_runs', true)) {
-            // AgentStreamed extends AgentPrompted but is listened for in its
-            // own right: the dispatcher walks interfaces, never parents, so a
-            // listener on the parent alone leaves every streamed turn unbilled.
             Event::listen(AgentPrompted::class, [RecordRun::class, 'prompted']);
             Event::listen(AgentStreamed::class, [RecordRun::class, 'prompted']);
             Event::listen(AgentFailed::class, [RecordRun::class, 'failed']);
