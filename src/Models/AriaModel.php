@@ -14,7 +14,6 @@ abstract class AriaModel extends Model
 
     protected $guarded = ['id'];
 
-    /** The unprefixed table name. Aria resolves it to an override or the prefix. */
     protected string $ariaTable = '';
 
     public function getTable(): string

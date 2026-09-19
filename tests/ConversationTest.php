@@ -33,10 +33,6 @@ describe('the agent', function (): void {
         expect($tools[0])->toBeInstanceOf(KnowledgeSearch::class);
     });
 
-    /*
-     * Read through a method rather than a #[MaxSteps] attribute, because an
-     * attribute cannot read config and the SDK prefers a method over one.
-     */
     it('takes its ceilings from config, so two products can differ without two agent classes', function (): void {
         config(['aria.limits.max_steps' => 3, 'aria.limits.max_tokens' => 400, 'aria.limits.timeout' => 9]);
 
@@ -59,11 +55,6 @@ describe('running a turn', function (): void {
         expect(Message::query()->pluck('role')->all())->toBe(['user', 'assistant']);
     });
 
-    /*
-     * The SDK only remembers a turn that already has a conversation or a
-     * participant, and a website visitor has neither - so the row has to
-     * exist before the prompt, or an anonymous exchange is never stored.
-     */
     it('remembers an anonymous visitor, who has no participant to be keyed by', function (): void {
         AriaAgent::fake(['Hello.']);
 
@@ -103,12 +94,6 @@ describe('running a turn', function (): void {
 });
 
 describe('redacting and normalising', function (): void {
-    /*
-     * Masked at the Assistant boundary rather than in SDK prompt middleware.
-     * Middleware rewrites the prompt on the way to the provider, but the
-     * store writes the prompt it was handed, so the raw address would be
-     * kept and replayed as history on the next turn.
-     */
     it('redacts an email address before it is stored or sent', function (): void {
         AriaAgent::fake(['Noted.']);
 
@@ -147,11 +132,6 @@ describe('redacting and normalising', function (): void {
         expect(Message::query()->where('role', 'user')->value('content'))->toBe('joseph@noria.co.ke');
     });
 
-    /*
-     * A class name and not a callable, because config:cache var_exports the
-     * config array and throws on a closure - a callable would pass every test
-     * here and break the first deploy that cached its config.
-     */
     it('passes the answer through the normaliser the host named in config', function (): void {
         config(['aria.normaliser' => Shouty::class]);
         AriaAgent::fake(['quietly now']);

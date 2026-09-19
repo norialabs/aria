@@ -20,13 +20,6 @@ return new class extends Migration
         $conversations = Aria::table('conversations');
         $documents = Aria::table('documents');
 
-        /*
-         * The conversation and message columns are the SDK's, because the
-         * SDK's ConversationStore writes and reads them. Aria adds corpus,
-         * scope and visitor_key, and replaces the SDK's bigint participant_id
-         * with a string so a host whose users have UUID keys can still name
-         * one. Renaming a column here breaks the store, not just a query.
-         */
         Schema::create($conversations, function (Blueprint $table): void {
             $table->uuid('id')->primary();
             $table->string('scope', 64)->nullable()->index();
@@ -43,9 +36,6 @@ return new class extends Migration
 
         Schema::create(Aria::table('messages'), function (Blueprint $table) use ($conversations): void {
             $table->uuid('id')->primary();
-            // Named explicitly rather than let foreignIdFor derive it: the
-            // SDK's store queries conversation_id, so a host swapping the
-            // model must not rename the column out from under it.
             $table->foreignIdFor(Aria::conversationModel(), 'conversation_id')
                 ->constrained(table: $conversations)
                 ->cascadeOnDelete();
@@ -101,10 +91,6 @@ return new class extends Migration
             $table->index(['embedding_provider', 'embedding_model', 'embedding_dimensions'], 'aria_chunks_embedding_idx');
         });
 
-        // Postgres with pgvector only. Everywhere else - including a Postgres
-        // whose operator cannot install the extension - gets no column, no
-        // cast, and the index's LIKE fallback, rather than a migration that
-        // fails on a type the database has never heard of.
         if (Vectors::available()) {
             $dimensions = (int) config('aria.embeddings.dimensions', 1536);
 

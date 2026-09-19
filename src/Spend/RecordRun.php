@@ -11,14 +11,6 @@ use Laravel\Ai\Prompts\AgentPrompt;
 use NoriaLabs\Aria\Aria;
 use NoriaLabs\Aria\Contracts\BudgetPolicy;
 
-/**
- * Every call the SDK makes, written down with what it cost.
- *
- * The agent, provider and model are on the prompt rather than the event. Read
- * from the event they come back null, the model prices as '', RunCost charges
- * the ceiling rate for every call ever made, and the log fills with warnings
- * about a model nobody named.
- */
 class RecordRun
 {
     private const ERROR_LIMIT = 1_000;
@@ -28,7 +20,6 @@ class RecordRun
         private Budget $budget,
     ) {}
 
-    /** Also the listener for AgentStreamed, which extends AgentPrompted. */
     public function prompted(AgentPrompted $event): void
     {
         $usage = $event->response->usage;
@@ -59,10 +50,6 @@ class RecordRun
         ]);
     }
 
-    /**
-     * Embeddings report a plain token count rather than a Usage, and only ever
-     * consume input, so the cost is built from the count rather than a Usage.
-     */
     public function embedded(EmbeddingsGenerated $event): void
     {
         $cost = RunCost::ofTokens($event->model, input: $event->response->tokens);
@@ -85,10 +72,6 @@ class RecordRun
         Aria::runModel()::query()->create($attributes + ['scope' => $this->policy->scope()]);
     }
 
-    /**
-     * The connection name the app configured, not the driver, so two OpenAI
-     * connections pointed at different keys stay apart in the ledger.
-     */
     private function providerOf(AgentPrompt $prompt): string
     {
         return $prompt->provider->name();

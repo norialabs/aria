@@ -68,11 +68,6 @@ describe('naming the tables', function (): void {
         expect((new Chunk)->getTable())->toBe('aria_chunks');
     });
 
-    /*
-     * The migration and the models read the same resolver, so a host that
-     * renames a table cannot end up with models querying one name and a
-     * migration having created another.
-     */
     it('creates the tables under the names the models will look for', function (): void {
         foreach (['conversations', 'messages', 'documents', 'chunks', 'runs', 'spend_ledger'] as $name) {
             expect(Schema::hasTable(Aria::table($name)))->toBeTrue("missing {$name}");
@@ -83,10 +78,6 @@ describe('naming the tables', function (): void {
 describe('swapping the models', function (): void {
     afterEach(fn () => Aria::forgetModels());
 
-    /*
-     * A host that cannot add a relation, a scope or a trait to a package's
-     * model forks the package. These setters are why it does not have to.
-     */
     it('reads through the model the host substituted', function (): void {
         Aria::useConversationModel(HostConversation::class);
 

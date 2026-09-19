@@ -24,17 +24,9 @@ function doc(string $key, string $title, string $body): KnowledgeDocument
 beforeEach(function (): void {
     StubSource::$documents = [];
 
-    // No provider is called: every chunk gets a stub vector, so these tests
-    // exercise the index rather than somebody's embedding model.
     Embeddings::fake();
 });
 
-/*
- * Retrieval behaviour splits by driver. Writing, hashing and de-duplicating
- * are the same everywhere; matching is not, and a stub vector carries no
- * meaning to compare against, so the similarity path cannot be asserted
- * without a real provider. These cover the LIKE fallback and say so.
- */
 function skipWhereVectorsExist(): void
 {
     if (Vectors::indexed()) {
@@ -60,7 +52,6 @@ it('re-embeds only the documents whose content moved', function (): void {
 
     $first = Document::query()->firstOrFail()->source_hash;
 
-    // Same content again: the hash holds, so nothing is re-embedded.
     $second = app(KnowledgeIndex::class)->rebuild();
     expect($second['chunks'])->toBe(0);
 
@@ -120,7 +111,6 @@ it('reads only its own corpus, so two products can share a database', function (
     StubSource::$documents = [doc('mine', 'Mine', 'A reconciliation document.')];
     app(KnowledgeIndex::class)->rebuild();
 
-    // A second product's document, in the same tables.
     $other = Document::query()->create([
         'corpus' => 'somebody-else',
         'source_type' => 'page',

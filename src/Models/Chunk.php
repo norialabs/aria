@@ -17,10 +17,6 @@ class Chunk extends AriaModel
     protected string $ariaTable = 'chunks';
 
     /**
-     * The vector column exists on pgsql only - see the migration - so the cast
-     * that reads it has to be conditional too, or every other driver throws on
-     * a column it never created.
-     *
      * @return array<string, string>
      */
     protected function casts(): array

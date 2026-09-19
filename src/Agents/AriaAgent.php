@@ -13,20 +13,6 @@ use Laravel\Ai\Promptable;
 use NoriaLabs\Aria\Contracts\Persona;
 use NoriaLabs\Aria\Tools\KnowledgeSearch;
 
-/**
- * One agent for every product. What differs between them is the persona and
- * the tools, both injected, so there is no per-product subclass.
- *
- * History, persistence and approval resume come from the SDK's trait rather
- * than from this package. The hand-rolled version replayed user and assistant
- * text only: a tool call was persisted and then never shown to the model
- * again, so the assistant re-ran the same retrieval on every single turn.
- *
- * The limits are methods rather than #[MaxSteps] attributes because the SDK
- * prefers a method over an attribute, and an attribute cannot read config -
- * a support assistant and a research one want different ceilings without
- * needing different agent classes.
- */
 class AriaAgent implements Agent, HasTools, RemembersConversations
 {
     use Promptable;
@@ -48,9 +34,6 @@ class AriaAgent implements Agent, HasTools, RemembersConversations
     {
         yield app(KnowledgeSearch::class);
 
-        // Yielded one at a time rather than `yield from`: that preserves the
-        // source array's keys, so a product's first tool reuses key 0 and
-        // silently replaces retrieval when the generator is collected.
         foreach ($this->extraTools as $tool) {
             yield $tool;
         }
@@ -71,7 +54,6 @@ class AriaAgent implements Agent, HasTools, RemembersConversations
         return Config::integer('aria.limits.timeout', 60);
     }
 
-    /** How many stored turns are replayed. Each one is tokens on every turn. */
     protected function maxConversationMessages(): int
     {
         return Config::integer('aria.history', 20);

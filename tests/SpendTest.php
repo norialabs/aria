@@ -50,7 +50,6 @@ function answered(string $model = 'cheap-model', int $prompt = 1_000_000, int $c
 
 describe('pricing a run', function (): void {
     it('prices a run from the tokens the provider reported', function (): void {
-        // 1M in at 100_000 micros, 1M out at 200_000 micros.
         expect(RunCost::of('cheap-model', usage(prompt: 1_000_000, completion: 1_000_000)))
             ->toBe(300_000);
     });
@@ -168,12 +167,6 @@ describe('writing a run down', function (): void {
         expect($run->status)->toBe('succeeded');
     });
 
-    /*
-     * The regression the whole block exists for. Agent, provider and model
-     * live on the prompt, not on the event. Read from the event they come back
-     * null, the model prices as '', and every call ever made is charged at the
-     * ceiling rate.
-     */
     it('prices the run at the rate of its own model, not the ceiling rate', function (): void {
         app(RecordRun::class)->prompted(answered('cheap-model', prompt: 1_000_000));
 
@@ -195,11 +188,6 @@ describe('writing a run down', function (): void {
         expect(app(Budget::class)->spentThisPeriod())->toBe(100_000);
     });
 
-    /*
-     * The dispatcher walks a class's interfaces, never its parents, so a
-     * listener registered on AgentPrompted alone leaves every streamed turn
-     * unrecorded and unbilled - which is the path the chat widget takes.
-     */
     it('bills a streamed turn as well as a plain one', function (): void {
         event(new AgentStreamed(
             invocationId: 'inv',

@@ -7,13 +7,6 @@ namespace NoriaLabs\Aria\Spend;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\Data\Usage;
 
-/**
- * What a run cost, in USD micros, from the token counts the SDK reports.
- *
- * A model missing from the price list is charged at the dearest rate on it and
- * logged. Costing it at zero would read as thrift in the ledger while quietly
- * switching every cap off.
- */
 final class RunCost
 {
     private const PER_MILLION = 1_000_000;
@@ -29,7 +22,6 @@ final class RunCost
         );
     }
 
-    /** Priced straight from token counts, for callers that report no Usage. */
     public static function ofTokens(
         string $model,
         int $input = 0,
@@ -37,8 +29,6 @@ final class RunCost
         int $cacheWrite = 0,
         int $cacheRead = 0,
     ): int {
-        // Indexed rather than read through dot notation: a model slug carries
-        // dots of its own and would be read as nested keys.
         $table = config('aria.pricing');
         $prices = is_array($table) ? ($table[$model] ?? null) : null;
 
@@ -62,9 +52,6 @@ final class RunCost
     }
 
     /**
-     * The dearest rate quoted for each direction across the whole list, so that
-     * pricing a new model in cannot make the fallback cheaper than the truth.
-     *
      * @return array<string, int>
      */
     private static function ceiling(mixed $table): array

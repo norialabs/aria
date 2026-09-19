@@ -12,14 +12,6 @@ use NoriaLabs\Aria\Models\Message;
 use NoriaLabs\Aria\Models\Run;
 use NoriaLabs\Aria\Models\SpendLedger;
 
-/**
- * The package's configuration surface: which models it reads through, and
- * what its tables are called.
- *
- * Models are swappable because a host that cannot add a relation, a scope or
- * a trait to a package's model ends up forking the package. Call the setters
- * from a service provider's register().
- */
 final class Aria
 {
     /** @var class-string<Conversation> */
@@ -106,11 +98,6 @@ final class Aria
         return self::$spendLedgerModel;
     }
 
-    /**
-     * The name of one of Aria's tables: the explicit override if the host set
-     * one, otherwise the prefix. Read by both the models and the migration,
-     * so the two can never disagree about where a table lives.
-     */
     public static function table(string $name): string
     {
         $configured = config('aria.tables.'.$name);
@@ -129,7 +116,6 @@ final class Aria
         return is_string($connection) && $connection !== '' ? $connection : null;
     }
 
-    /** Returns every model to its default. For tests, and for nothing else. */
     public static function forgetModels(): void
     {
         self::$conversationModel = Conversation::class;
