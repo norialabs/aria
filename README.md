@@ -1,7 +1,7 @@
-# laravel-aria
+# norialabs/aria
 
-[![CI](https://github.com/thekiharani/laravel-aria/actions/workflows/ci.yml/badge.svg)](https://github.com/thekiharani/laravel-aria/actions/workflows/ci.yml)
-[![Packagist](https://img.shields.io/packagist/v/thekiharani/laravel-aria)](https://packagist.org/packages/thekiharani/laravel-aria)
+[![CI](https://github.com/norialabs/aria/actions/workflows/ci.yml/badge.svg)](https://github.com/norialabs/aria/actions/workflows/ci.yml)
+[![Packagist](https://img.shields.io/packagist/v/norialabs/aria)](https://packagist.org/packages/norialabs/aria)
 
 The layer between `laravel/ai` and a product: retrieval over a corpus you supply, spend
 governance, PII masking, and somewhere for a conversation to live.
@@ -15,7 +15,7 @@ assistant in another.
 ```
 laravel/ai          agents - tools - providers - streaming - conversations - events
     ^
-laravel-aria        retrieval - spend - masking - persona
+norialabs/aria      retrieval - spend - masking - persona
     ^
 your application    a KnowledgeSource, a Persona, your own tools
 ```
@@ -28,7 +28,7 @@ method-over-attribute seam.
 ## Install
 
 ```bash
-composer require thekiharani/laravel-aria
+composer require norialabs/aria
 php artisan vendor:publish --tag=aria-config
 php artisan migrate
 ```

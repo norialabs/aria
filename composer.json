@@ -1,5 +1,5 @@
 {
-  "name": "thekiharani/laravel-aria",
+  "name": "norialabs/aria",
   "description": "The layer between laravel/ai and a product: conversations, retrieval over a pluggable corpus, spend governance, and PII masking.",
   "keywords": ["laravel", "ai", "assistant", "rag", "embeddings"],
   "license": "MIT",
