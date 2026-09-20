@@ -6,6 +6,7 @@ namespace NoriaLabs\Aria\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
+use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
 use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
@@ -16,7 +17,7 @@ class KnowledgeSearch implements Tool
 
     public function description(): string
     {
-        return (string) config(
+        return Config::string(
             'aria.tools.knowledge_search.description',
             'Search the knowledge base for facts before answering anything factual. Returns the most relevant entries with their URLs.',
         );
@@ -34,7 +35,7 @@ class KnowledgeSearch implements Tool
         $results = $this->index->search($query);
 
         if ($results === []) {
-            return (string) config(
+            return Config::string(
                 'aria.tools.knowledge_search.empty',
                 'No matching entries were found. Say you are not certain rather than guessing.',
             );

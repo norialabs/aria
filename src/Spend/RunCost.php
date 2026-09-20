@@ -48,7 +48,13 @@ final class RunCost
 
     private static function priced(int $tokens, mixed $perMillionMicros): int
     {
-        return intdiv($tokens * (int) $perMillionMicros, self::PER_MILLION);
+        return intdiv($tokens * self::asInt($perMillionMicros), self::PER_MILLION);
+    }
+
+    /** A price read out of config is mixed until something narrows it. */
+    private static function asInt(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
     }
 
     /**
@@ -60,7 +66,7 @@ final class RunCost
 
         foreach (is_array($table) ? $table : [] as $prices) {
             foreach ($ceiling as $direction => $highest) {
-                $ceiling[$direction] = max($highest, (int) (is_array($prices) ? ($prices[$direction] ?? 0) : 0));
+                $ceiling[$direction] = max($highest, is_array($prices) ? self::asInt($prices[$direction] ?? 0) : 0);
             }
         }
 

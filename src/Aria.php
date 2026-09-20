@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NoriaLabs\Aria;
 
+use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 use NoriaLabs\Aria\Models\Chunk;
 use NoriaLabs\Aria\Models\Conversation;
@@ -106,7 +107,7 @@ final class Aria
             return $configured;
         }
 
-        return ((string) config('aria.table_prefix', 'aria_')).$name;
+        return Config::string('aria.table_prefix', 'aria_').$name;
     }
 
     public static function connection(): ?string
