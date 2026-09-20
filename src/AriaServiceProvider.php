@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace NoriaLabs\Aria;
 
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Ai\Contracts\ConversationStore;
@@ -32,7 +33,7 @@ class AriaServiceProvider extends ServiceProvider
 
         $this->app->bind(BudgetPolicy::class, Unmetered::class);
 
-        $this->app->bind(Normaliser::class, function ($app) {
+        $this->app->bind(Normaliser::class, function (Application $app) {
             $normaliser = config('aria.normaliser');
 
             return is_string($normaliser) && $normaliser !== ''
@@ -46,13 +47,29 @@ class AriaServiceProvider extends ServiceProvider
         $this->app->singleton(KnowledgeIndex::class);
         $this->app->singleton(Masker::class);
 
-        $this->app->bind(Assistant::class, fn ($app) => new Assistant(
+        $this->app->bind(Assistant::class, fn (Application $app) => new Assistant(
             $app->make(Persona::class),
             $app->make(Budget::class),
             $app->make(Masker::class),
             $app->make(Normaliser::class),
             $app->make(ConversationStore::class),
-            $app->tagged('aria.tools'),
+            self::toolsIn($app),
+        ));
+    }
+
+    /**
+     * A tag resolves to whatever was bound against it, so the tools are
+     * narrowed here rather than trusted at the constructor.
+     *
+     * @return list<object>
+     */
+    private static function toolsIn(Application $app): array
+    {
+        $tagged = $app->tagged('aria.tools');
+
+        return array_values(array_filter(
+            is_array($tagged) ? $tagged : iterator_to_array($tagged, false),
+            is_object(...),
         ));
     }
 

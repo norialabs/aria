@@ -35,7 +35,7 @@ class Budget
         return $this->ledgerQuery()
             ->whereKey($ledger->getKey())
             ->whereRaw('spend_usd_micros + ? <= ?', [$estimate, $cap])
-            ->update(['spend_usd_micros' => DB::raw('spend_usd_micros + '.$estimate)]) === 1;
+            ->increment('spend_usd_micros', $estimate) === 1;
     }
 
     public function refund(int $estimateUsdMicros): void
@@ -46,11 +46,24 @@ class Budget
             return;
         }
 
-        $this->ledgerQuery()
-            ->whereKey($this->ledger()->getKey())
-            ->update(['spend_usd_micros' => DB::raw(
-                'CASE WHEN spend_usd_micros > '.$estimate.' THEN spend_usd_micros - '.$estimate.' ELSE 0 END'
-            )]);
+        $key = $this->ledger()->getKey();
+
+        /*
+         * Two statements rather than one CASE, so the amount is bound rather
+         * than concatenated into the SET clause, and a transaction so a
+         * record() landing between them is not clobbered by the clamp.
+         */
+        DB::connection(Aria::connection())->transaction(function () use ($key, $estimate): void {
+            $this->ledgerQuery()
+                ->whereKey($key)
+                ->where('spend_usd_micros', '>', $estimate)
+                ->decrement('spend_usd_micros', $estimate);
+
+            $this->ledgerQuery()
+                ->whereKey($key)
+                ->where('spend_usd_micros', '<=', $estimate)
+                ->update(['spend_usd_micros' => 0]);
+        });
     }
 
     public function record(int $usdMicros): void
@@ -63,7 +76,7 @@ class Budget
 
         $this->ledgerQuery()
             ->whereKey($this->ledger()->getKey())
-            ->update(['spend_usd_micros' => DB::raw('spend_usd_micros + '.$spend)]);
+            ->increment('spend_usd_micros', $spend);
     }
 
     public function estimateFor(string $input): int
@@ -74,7 +87,7 @@ class Budget
         $dearest = 0;
 
         foreach (is_array($table) ? $table : [] as $prices) {
-            $dearest = max($dearest, (int) (is_array($prices) ? ($prices['output'] ?? 0) : 0));
+            $dearest = max($dearest, is_array($prices) ? self::asInt($prices['output'] ?? 0) : 0);
         }
 
         return intdiv($tokens * 2 * $dearest, 1_000_000);
@@ -82,7 +95,7 @@ class Budget
 
     public function spentThisPeriod(): int
     {
-        return (int) $this->ledger()->getAttribute('spend_usd_micros');
+        return self::asInt($this->ledger()->getAttribute('spend_usd_micros'));
     }
 
     private function hasHeadroom(int $estimateUsdMicros): bool
@@ -101,6 +114,12 @@ class Budget
     {
         /** @var Builder<SpendLedger> */
         return Aria::spendLedgerModel()::query();
+    }
+
+    /** An attribute read back off a model is mixed until something narrows it. */
+    private static function asInt(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
     }
 
     private function ledger(): SpendLedger
