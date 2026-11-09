@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Models;
+namespace Noria\Aria\Models;
 
 class Run extends AriaModel
 {

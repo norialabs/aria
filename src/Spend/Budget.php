@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Spend;
+namespace Noria\Aria\Spend;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Models\SpendLedger;
+use Noria\Aria\Aria;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Models\SpendLedger;
 
 class Budget
 {

@@ -37,18 +37,18 @@
     },
     "autoload": {
         "psr-4": {
-            "NoriaLabs\\Aria\\": "src/"
+            "Noria\\Aria\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "NoriaLabs\\Aria\\Tests\\": "tests/"
+            "Noria\\Aria\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "NoriaLabs\\Aria\\AriaServiceProvider"
+                "Noria\\Aria\\AriaServiceProvider"
             ]
         }
     },

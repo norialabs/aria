@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Support;
+namespace Noria\Aria\Support;
 
-use NoriaLabs\Aria\Contracts\Normaliser;
+use Noria\Aria\Contracts\Normaliser;
 
 final class PlainText implements Normaliser
 {

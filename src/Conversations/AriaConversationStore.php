@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Conversations;
+namespace Noria\Aria\Conversations;
 
 use Laravel\Ai\Storage\DatabaseConversationStore;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
+use Noria\Aria\Aria;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Contracts\KnowledgeSource;
 
 class AriaConversationStore extends DatabaseConversationStore
 {

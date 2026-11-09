@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Spend;
+namespace Noria\Aria\Spend;
 
 use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\EmbeddingsGenerated;
 use Laravel\Ai\Prompts\AgentPrompt;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Aria;
+use Noria\Aria\Contracts\BudgetPolicy;
 
 class RecordRun
 {

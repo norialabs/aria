@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Contracts;
+namespace Noria\Aria\Contracts;
 
-use NoriaLabs\Aria\Knowledge\KnowledgeDocument;
+use Noria\Aria\Knowledge\KnowledgeDocument;
 
 interface KnowledgeSource
 {

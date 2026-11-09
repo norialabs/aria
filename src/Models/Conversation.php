@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Models;
+namespace Noria\Aria\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use NoriaLabs\Aria\Aria;
+use Noria\Aria\Aria;
 
 /**
  * @property string $id

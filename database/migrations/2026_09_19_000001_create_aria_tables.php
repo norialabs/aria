@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Support\Vectors;
+use Noria\Aria\Aria;
+use Noria\Aria\Support\Vectors;
 
 return new class extends Migration
 {

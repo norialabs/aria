@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Support;
+namespace Noria\Aria\Support;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use NoriaLabs\Aria\Aria;
+use Noria\Aria\Aria;
 use Throwable;
 
 final class Vectors

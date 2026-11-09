@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Support;
+namespace Noria\Aria\Support;
 
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Contracts\BudgetPolicy;
 
 final class Unmetered implements BudgetPolicy
 {

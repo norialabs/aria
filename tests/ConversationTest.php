@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 use Laravel\Ai\Contracts\ConversationStore;
 use Laravel\Ai\Storage\DatabaseConversationStore;
-use NoriaLabs\Aria\Agents\AriaAgent;
-use NoriaLabs\Aria\Contracts\Normaliser;
-use NoriaLabs\Aria\Conversations\Assistant;
-use NoriaLabs\Aria\Models\Conversation;
-use NoriaLabs\Aria\Models\Message;
-use NoriaLabs\Aria\Tests\Fixtures\Shouty;
-use NoriaLabs\Aria\Tests\Fixtures\StubPersona;
-use NoriaLabs\Aria\Tools\KnowledgeSearch;
+use Noria\Aria\Agents\AriaAgent;
+use Noria\Aria\Contracts\Normaliser;
+use Noria\Aria\Conversations\Assistant;
+use Noria\Aria\Models\Conversation;
+use Noria\Aria\Models\Message;
+use Noria\Aria\Tests\Fixtures\Shouty;
+use Noria\Aria\Tests\Fixtures\StubPersona;
+use Noria\Aria\Tools\KnowledgeSearch;
 
 describe('the agent', function (): void {
     it('takes its instructions from the persona and nothing from the package', function (): void {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Models;
+namespace Noria\Aria\Models;
 
 use Illuminate\Database\Eloquent\Casts\AsVector;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
-use NoriaLabs\Aria\Aria;
+use Noria\Aria\Aria;
 
 /**
  * @property string $content

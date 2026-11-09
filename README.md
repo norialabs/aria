@@ -33,13 +33,20 @@ php artisan vendor:publish --tag=aria-config
 php artisan migrate
 ```
 
+## Upgrading from 0.1
+
+0.2 moves the namespace from `NoriaLabs\Aria\` to `Noria\Aria\` and changes nothing else.
+Require `norialabs/aria:^0.2`, then replace `NoriaLabs\Aria\` with `Noria\Aria\` in imports,
+configuration files and container bindings, and clear the cached configuration. The old
+namespace has no aliases.
+
 ## What you implement
 
 Three things, and nothing else.
 
 ```php
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
-use NoriaLabs\Aria\Knowledge\KnowledgeDocument;
+use Noria\Aria\Contracts\KnowledgeSource;
+use Noria\Aria\Knowledge\KnowledgeDocument;
 
 class SiteKnowledge implements KnowledgeSource
 {
@@ -64,7 +71,7 @@ class SiteKnowledge implements KnowledgeSource
 ```
 
 ```php
-use NoriaLabs\Aria\Contracts\Persona;
+use Noria\Aria\Contracts\Persona;
 
 class Aria implements Persona
 {
@@ -177,7 +184,7 @@ The normaliser is **a class name, not a callable**. `config:cache` var_exports t
 throws on a closure, so a callable here passes every test and breaks the first deploy.
 
 ```php
-class Ascii implements NoriaLabs\Aria\Contracts\Normaliser
+class Ascii implements Noria\Aria\Contracts\Normaliser
 {
     public function normalise(string $text): string { /* ... */ }
 }
@@ -220,7 +227,7 @@ and once from `database/migrations`.
 
 ```php
 use Laravel\Ai\Embeddings;
-use NoriaLabs\Aria\Agents\AriaAgent;
+use Noria\Aria\Agents\AriaAgent;
 
 AriaAgent::fake(['Yes, we do.']);
 Embeddings::fake();

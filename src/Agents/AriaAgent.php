@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Agents;
+namespace Noria\Aria\Agents;
 
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Concerns\RemembersConversations as RemembersConversationsTrait;
@@ -10,8 +10,8 @@ use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasTools;
 use Laravel\Ai\Contracts\RemembersConversations;
 use Laravel\Ai\Promptable;
-use NoriaLabs\Aria\Contracts\Persona;
-use NoriaLabs\Aria\Tools\KnowledgeSearch;
+use Noria\Aria\Contracts\Persona;
+use Noria\Aria\Tools\KnowledgeSearch;
 
 class AriaAgent implements Agent, HasTools, RemembersConversations
 {

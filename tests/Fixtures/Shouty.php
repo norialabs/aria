@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Tests\Fixtures;
+namespace Noria\Aria\Tests\Fixtures;
 
-use NoriaLabs\Aria\Contracts\Normaliser;
+use Noria\Aria\Contracts\Normaliser;
 
 class Shouty implements Normaliser
 {
