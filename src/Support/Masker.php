@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Support;
+namespace Noria\Aria\Support;
 
 use Illuminate\Support\Facades\Config;
 

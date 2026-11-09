@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Tools;
+namespace Noria\Aria\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\JsonSchema\Types\Type;
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
-use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
+use Noria\Aria\Knowledge\KnowledgeIndex;
 
 class KnowledgeSearch implements Tool
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Spend;
+namespace Noria\Aria\Spend;
 
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\Data\Usage;

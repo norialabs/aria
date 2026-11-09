@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Exceptions;
+namespace Noria\Aria\Exceptions;
 
 use RuntimeException;
 

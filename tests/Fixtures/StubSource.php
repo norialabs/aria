@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Tests\Fixtures;
+namespace Noria\Aria\Tests\Fixtures;
 
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
-use NoriaLabs\Aria\Knowledge\KnowledgeDocument;
+use Noria\Aria\Contracts\KnowledgeSource;
+use Noria\Aria\Knowledge\KnowledgeDocument;
 
 class StubSource implements KnowledgeSource
 {

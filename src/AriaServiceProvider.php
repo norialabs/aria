@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria;
+namespace Noria\Aria;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Event;
@@ -12,18 +12,18 @@ use Laravel\Ai\Events\AgentFailed;
 use Laravel\Ai\Events\AgentPrompted;
 use Laravel\Ai\Events\AgentStreamed;
 use Laravel\Ai\Events\EmbeddingsGenerated;
-use NoriaLabs\Aria\Console\IndexCommand;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Contracts\Normaliser;
-use NoriaLabs\Aria\Contracts\Persona;
-use NoriaLabs\Aria\Conversations\AriaConversationStore;
-use NoriaLabs\Aria\Conversations\Assistant;
-use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
-use NoriaLabs\Aria\Spend\Budget;
-use NoriaLabs\Aria\Spend\RecordRun;
-use NoriaLabs\Aria\Support\Masker;
-use NoriaLabs\Aria\Support\PlainText;
-use NoriaLabs\Aria\Support\Unmetered;
+use Noria\Aria\Console\IndexCommand;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Contracts\Normaliser;
+use Noria\Aria\Contracts\Persona;
+use Noria\Aria\Conversations\AriaConversationStore;
+use Noria\Aria\Conversations\Assistant;
+use Noria\Aria\Knowledge\KnowledgeIndex;
+use Noria\Aria\Spend\Budget;
+use Noria\Aria\Spend\RecordRun;
+use Noria\Aria\Support\Masker;
+use Noria\Aria\Support\PlainText;
+use Noria\Aria\Support\Unmetered;
 
 class AriaServiceProvider extends ServiceProvider
 {

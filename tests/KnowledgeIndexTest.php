@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Laravel\Ai\Embeddings;
-use NoriaLabs\Aria\Knowledge\KnowledgeDocument;
-use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
-use NoriaLabs\Aria\Models\Chunk;
-use NoriaLabs\Aria\Models\Document;
-use NoriaLabs\Aria\Support\Vectors;
-use NoriaLabs\Aria\Tests\Fixtures\StubSource;
+use Noria\Aria\Knowledge\KnowledgeDocument;
+use Noria\Aria\Knowledge\KnowledgeIndex;
+use Noria\Aria\Models\Chunk;
+use Noria\Aria\Models\Document;
+use Noria\Aria\Support\Vectors;
+use Noria\Aria\Tests\Fixtures\StubSource;
 
 function doc(string $key, string $title, string $body): KnowledgeDocument
 {

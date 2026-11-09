@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Conversations;
+namespace Noria\Aria\Conversations;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
@@ -10,12 +10,12 @@ use Laravel\Ai\Contracts\ConversationStore;
 use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\StreamableAgentResponse;
 use Laravel\Ai\Streaming\Events\TextDelta;
-use NoriaLabs\Aria\Agents\AriaAgent;
-use NoriaLabs\Aria\Contracts\Normaliser;
-use NoriaLabs\Aria\Contracts\Persona;
-use NoriaLabs\Aria\Exceptions\BudgetExhausted;
-use NoriaLabs\Aria\Spend\Budget;
-use NoriaLabs\Aria\Support\Masker;
+use Noria\Aria\Agents\AriaAgent;
+use Noria\Aria\Contracts\Normaliser;
+use Noria\Aria\Contracts\Persona;
+use Noria\Aria\Exceptions\BudgetExhausted;
+use Noria\Aria\Spend\Budget;
+use Noria\Aria\Support\Masker;
 
 class Assistant
 {

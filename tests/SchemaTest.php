@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
-use NoriaLabs\Aria\Models\Conversation;
+use Noria\Aria\Models\Conversation;
 
 it('keys every table on a uuid rather than an auto-increment', function (): void {
     foreach (['conversations', 'messages', 'documents', 'chunks', 'runs', 'spend_ledger'] as $name) {

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Knowledge;
+namespace Noria\Aria\Knowledge;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Embeddings;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
-use NoriaLabs\Aria\Models\Chunk;
-use NoriaLabs\Aria\Models\Document;
-use NoriaLabs\Aria\Support\Vectors;
+use Noria\Aria\Aria;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Contracts\KnowledgeSource;
+use Noria\Aria\Models\Chunk;
+use Noria\Aria\Models\Document;
+use Noria\Aria\Support\Vectors;
 
 class KnowledgeIndex
 {

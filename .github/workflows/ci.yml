@@ -1,70 +1,133 @@
-name: CI
+name: Verify and release
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  test:
-    runs-on: ubuntu-24.04
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ["8.3", "8.4", "8.5"]
-
-    name: PHP ${{ matrix.php }}
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          coverage: xdebug
-
-      - name: Validate composer metadata
-        run: composer validate --strict
-
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Check code style
-        run: ./vendor/bin/pint --test
-
-      - name: Run static analysis
-        run: ./vendor/bin/phpstan analyse --no-progress
-
-      - name: Run tests
-        run: ./vendor/bin/pest
-
-      - name: Verify package archive
-        run: composer archive --format=zip --dir=/tmp
-
   verify:
-    needs: test
-    runs-on: ubuntu-24.04
+    name: Verify what changed
+    runs-on: ubuntu-26.04
+    timeout-minutes: 15
     permissions:
       contents: read
-
+      checks: read
+      pull-requests: read
     steps:
-      - name: Required checks passed
-        run: echo "All required CI checks passed."
+      - name: Check out the repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Look for a pull request that already verified this tree
+        id: reuse
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          tree="$(git rev-parse "${GITHUB_SHA}^{tree}")"
+          verified=false
+
+          for head in $(gh api "repos/${REPO}/commits/${GITHUB_SHA}/pulls" --jq '.[] | select(.merged_at != null) | .head.sha'); do
+            [ "$(gh api "repos/${REPO}/commits/${head}" --jq .commit.tree.sha)" = "$tree" ] || continue
+            passed="$(gh api "repos/${REPO}/commits/${head}/check-runs?check_name=Verify%20what%20changed&filter=all" \
+              --jq '[.check_runs[] | select(.conclusion == "success")] | length')"
+            if [ "$passed" -gt 0 ]; then
+              echo "tree ${tree} passed verify on pull request head ${head}"
+              verified=true
+              break
+            fi
+          done
+
+          echo "verified=${verified}" >> "${GITHUB_OUTPUT}"
+
+      - name: Work out what changed
+        id: scope
+        env:
+          VERIFIED: ${{ steps.reuse.outputs.verified }}
+          BEFORE: ${{ github.event.before }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+
+          base="${BASE:-${BEFORE:-}}"
+
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ] \
+            || ! git cat-file -e "$base^{commit}" 2>/dev/null; then
+            changed='EVERYTHING'
+          else
+            changed="$(git diff --name-only "$base" "${GITHUB_SHA}")"
+          fi
+
+          scope() {
+            if [ "$changed" = 'EVERYTHING' ]; then
+              echo true
+              return
+            fi
+            if printf '%s\n' "$changed" | grep -qE "$1"; then echo true; else echo false; fi
+          }
+
+          package="$(scope '^(src/|tests/|config/|database/|composer\.json|phpstan\.neon|pint\.json|phpunit\.xml|\.gitattributes|\.github/)')"
+
+          if [ "${VERIFIED:-false}" = true ]; then
+            package=false
+          fi
+
+          echo "package=${package}" >> "${GITHUB_OUTPUT}"
+          echo "changed scopes: package=${package}"
+
+      - name: Set up PHP 8.5
+        if: steps.scope.outputs.package == 'true'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+
+      - name: Validate the Composer metadata
+        if: steps.scope.outputs.package == 'true'
+        run: composer validate --strict
+
+      - name: Install Composer dependencies
+        if: steps.scope.outputs.package == 'true'
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Check the code style
+        if: steps.scope.outputs.package == 'true'
+        run: vendor/bin/pint --test
+
+      - name: Analyse the package statically
+        if: steps.scope.outputs.package == 'true'
+        run: vendor/bin/phpstan analyse --no-progress
+
+      - name: Build the package archive
+        if: steps.scope.outputs.package == 'true'
+        run: composer archive --format=zip --dir="${RUNNER_TEMP}"
 
   tag:
+    name: Tag the release
     needs: verify
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
     outputs:
       name: ${{ steps.tag.outputs.name }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -122,7 +185,7 @@ jobs:
           LATEST_TAG=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | grep -Ev '^v0\.0\.' | head -n1 || true)
 
           if [ -z "$LATEST_TAG" ]; then
-            NEW_TAG="v0.1.0"
+            NEW_TAG="v${RELEASE_LINE}.0"
             echo "Latest release tag: none"
             echo "New tag: $NEW_TAG"
 
@@ -136,18 +199,19 @@ jobs:
 
           echo "Latest release tag: $LATEST_TAG"
 
-          VERSION="${LATEST_TAG#v}"
-          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          LATEST_LINE="${LATEST_TAG#v}"
+          LATEST_LINE="${LATEST_LINE%.*}"
 
-          if [ "$MAJOR" -ne 0 ] || [ "$MINOR" -ne 1 ]; then
-            echo "Refusing to auto-release outside v0.1.x. Move the release baseline manually when you are ready."
+          if [ "$LATEST_LINE" = "$RELEASE_LINE" ]; then
+            NEW_TAG="v${RELEASE_LINE}.$(( ${LATEST_TAG##*.} + 1 ))"
+            echo "Bump: patch"
+          elif [ "$(printf '%s\n' "$LATEST_LINE" "$RELEASE_LINE" | sort -V | head -n1)" = "$LATEST_LINE" ]; then
+            NEW_TAG="v${RELEASE_LINE}.0"
+            echo "Bump: start the ${RELEASE_LINE} line"
+          else
+            echo "Refusing to release ${RELEASE_LINE}.x behind ${LATEST_TAG}. Raise RELEASE_LINE."
             exit 1
           fi
-
-          PATCH=$((PATCH + 1))
-          echo "Bump: patch"
-
-          NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
           echo "New tag: $NEW_TAG"
 
           assert_version_unused "$NEW_TAG"
@@ -157,16 +221,17 @@ jobs:
           echo "name=$NEW_TAG" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_LINE: "0.2"
 
   release:
-    needs: [verify, tag]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.tag.result == 'success'
-    runs-on: ubuntu-24.04
+    name: Publish the release
+    needs: tag
+    runs-on: ubuntu-26.04
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria;
+namespace Noria\Aria;
 
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
-use NoriaLabs\Aria\Models\Chunk;
-use NoriaLabs\Aria\Models\Conversation;
-use NoriaLabs\Aria\Models\Document;
-use NoriaLabs\Aria\Models\Message;
-use NoriaLabs\Aria\Models\Run;
-use NoriaLabs\Aria\Models\SpendLedger;
+use Noria\Aria\Models\Chunk;
+use Noria\Aria\Models\Conversation;
+use Noria\Aria\Models\Document;
+use Noria\Aria\Models\Message;
+use Noria\Aria\Models\Run;
+use Noria\Aria\Models\SpendLedger;
 
 final class Aria
 {

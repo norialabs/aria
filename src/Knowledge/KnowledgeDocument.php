@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Knowledge;
+namespace Noria\Aria\Knowledge;
 
 use Illuminate\Support\Carbon;
 

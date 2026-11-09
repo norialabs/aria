@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
 use Laravel\Ai\Embeddings;
-use NoriaLabs\Aria\Aria;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Conversations\Assistant;
-use NoriaLabs\Aria\Knowledge\KnowledgeDocument;
-use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
-use NoriaLabs\Aria\Models\Chunk;
-use NoriaLabs\Aria\Models\Conversation;
-use NoriaLabs\Aria\Models\Document;
-use NoriaLabs\Aria\Support\Unmetered;
-use NoriaLabs\Aria\Tests\Fixtures\HostConversation;
-use NoriaLabs\Aria\Tests\Fixtures\StubSource;
+use Noria\Aria\Aria;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Conversations\Assistant;
+use Noria\Aria\Knowledge\KnowledgeDocument;
+use Noria\Aria\Knowledge\KnowledgeIndex;
+use Noria\Aria\Models\Chunk;
+use Noria\Aria\Models\Conversation;
+use Noria\Aria\Models\Document;
+use Noria\Aria\Support\Unmetered;
+use Noria\Aria\Tests\Fixtures\HostConversation;
+use Noria\Aria\Tests\Fixtures\StubSource;
 
 describe('wiring', function (): void {
     it('resolves the assistant once the host has bound a persona and a source', function (): void {

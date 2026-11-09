@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Console;
+namespace Noria\Aria\Console;
 
 use Illuminate\Console\Command;
-use NoriaLabs\Aria\Knowledge\KnowledgeIndex;
+use Noria\Aria\Knowledge\KnowledgeIndex;
 
 class IndexCommand extends Command
 {

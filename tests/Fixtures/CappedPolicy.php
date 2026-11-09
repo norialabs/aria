@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Tests\Fixtures;
+namespace Noria\Aria\Tests\Fixtures;
 
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Contracts\BudgetPolicy;
 
 class CappedPolicy implements BudgetPolicy
 {

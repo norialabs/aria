@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Models;
+namespace Noria\Aria\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use NoriaLabs\Aria\Aria;
+use Noria\Aria\Aria;
 
 abstract class AriaModel extends Model
 {

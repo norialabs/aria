@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Tests;
+namespace Noria\Aria\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Ai\AiServiceProvider;
-use NoriaLabs\Aria\AriaServiceProvider;
-use NoriaLabs\Aria\Contracts\KnowledgeSource;
-use NoriaLabs\Aria\Contracts\Persona;
-use NoriaLabs\Aria\Tests\Fixtures\StubPersona;
-use NoriaLabs\Aria\Tests\Fixtures\StubSource;
+use Noria\Aria\AriaServiceProvider;
+use Noria\Aria\Contracts\KnowledgeSource;
+use Noria\Aria\Contracts\Persona;
+use Noria\Aria\Tests\Fixtures\StubPersona;
+use Noria\Aria\Tests\Fixtures\StubSource;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra

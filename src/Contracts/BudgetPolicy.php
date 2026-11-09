@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace NoriaLabs\Aria\Contracts;
+namespace Noria\Aria\Contracts;
 
 interface BudgetPolicy
 {

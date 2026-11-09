@@ -13,15 +13,15 @@ use Laravel\Ai\Responses\AgentResponse;
 use Laravel\Ai\Responses\Data\Meta;
 use Laravel\Ai\Responses\Data\Usage;
 use Laravel\Ai\Responses\EmbeddingsResponse;
-use NoriaLabs\Aria\Agents\AriaAgent;
-use NoriaLabs\Aria\Contracts\BudgetPolicy;
-use NoriaLabs\Aria\Models\Run;
-use NoriaLabs\Aria\Models\SpendLedger;
-use NoriaLabs\Aria\Spend\Budget;
-use NoriaLabs\Aria\Spend\RecordRun;
-use NoriaLabs\Aria\Spend\RunCost;
-use NoriaLabs\Aria\Tests\Fixtures\CappedPolicy;
-use NoriaLabs\Aria\Tests\Fixtures\StubPersona;
+use Noria\Aria\Agents\AriaAgent;
+use Noria\Aria\Contracts\BudgetPolicy;
+use Noria\Aria\Models\Run;
+use Noria\Aria\Models\SpendLedger;
+use Noria\Aria\Spend\Budget;
+use Noria\Aria\Spend\RecordRun;
+use Noria\Aria\Spend\RunCost;
+use Noria\Aria\Tests\Fixtures\CappedPolicy;
+use Noria\Aria\Tests\Fixtures\StubPersona;
 
 function usage(int $prompt = 0, int $completion = 0): Usage
 {
